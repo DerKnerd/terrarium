@@ -1,0 +1,3 @@
+include_directories(.pio/libdeps/nano_33_iot/OneWire_ID1)
+include_directories(.pio/libdeps/nano_33_iot/DallasTemperature_ID54)
+include_directories(.pio/libdeps/nano_33_iot/WiFiNINA_ID5538/src)

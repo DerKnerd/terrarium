@@ -8,9 +8,7 @@
 #include <Arduino.h>
 #include "../Symbols.h"
 #include "../display/Display.h"
-#include "../humidity/HumiditySensor.h"
 #include "../temperature/Thermometer.h"
-#include "../dimming/DimmerControl.h"
 #include "../relay/Relay.h"
 #include "../timing/Clock.h"
 
@@ -22,9 +20,7 @@ public:
 
 private:
     Display *display = new Display();
-    HumiditySensor *humiditySensor = new HumiditySensor();
     Thermometer *thermometer = new Thermometer();
-    DimmerControl *dimmer = new DimmerControl();
     Relay *heatRelay = new Relay();
     Relay *uvRelay = new Relay();
     Clock *clock = new Clock();
@@ -32,7 +28,7 @@ private:
     unsigned long cleanDisplayMillis = millis();
     bool showTimeSeparator = false;
 
-    void handleHotSideTemperature(uint8_t value);
+    void handleHotSideTemperature(float value);
 };
 
 

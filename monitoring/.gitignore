@@ -1,0 +1,6 @@
+.pio
+/cmake-build-debug/
+src/WifiSecrets.h
+src/WhoIsThis.h
+/src/Hostname.h
+/cmake-build-nano_33_iot/

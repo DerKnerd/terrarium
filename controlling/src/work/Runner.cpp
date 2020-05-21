@@ -5,64 +5,38 @@
 #include "Runner.h"
 
 void Runner::setup() {
-#ifdef DEBUG
     Serial.begin(9600);
-    Serial.println(F("Initializing..."));
+    dprintln(F("Initializing..."));
 
-    Serial.println(F("Initializing display"));
-#endif
+    dprintln(F("Initializing display"));
     display->setup();
     display->displayText(F("Initializing..."), 0);
 
-#ifdef DEBUG
-    Serial.println(F("Initializing clock"));
-#endif
+    dprintln(F("Initializing clock"));
     display->displayText(F("Initializing clock"), 1);
     Clock::setup();
 
-#ifdef DEBUG
-    Serial.println(F("Initializing humidity sensor"));
-#endif
-    display->displayText(F("Initializing humidity sensor"), 2);
-    humiditySensor->setup(2);
-
-#ifdef DEBUG
-    Serial.println(F("Initializing dimmer"));
-#endif
-    display->displayText(F("Initializing dimmer"), 3);
-    dimmer->setup(3);
-    dimmer->reset();
-
-#ifdef DEBUG
-    Serial.println(F("Initializing temperatures"));
-#endif
-    display->displayText(F("Initializing temperatures"), 4);
+    dprintln(F("Initializing temperatures"));
+    display->displayText(F("Initializing temperatures"), 3);
     thermometer->setup(5);
 
-#ifdef DEBUG
-    Serial.println(F("Initializing heat relay"));
-#endif
-    display->displayText(F("Initializing heat relay"), 5);
+    dprintln(F("Initializing heat relay"));
+    display->displayText(F("Initializing heat relay"), 4);
     heatRelay->setup(6);
 
-#ifdef DEBUG
-    Serial.println(F("Initializing uv relay"));
-#endif
-    display->displayText(F("Initializing uv relay"), 6);
-    uvRelay->setup(12);
+    dprintln(F("Initializing light relay"));
+    display->displayText(F("Initializing light relay"), 5);
+    uvRelay->setup(4);
 
-    display->displayText(F("Finish setup"), 7);
+    display->displayText(F("Finish setup"), 6);
     display->clear();
 }
 
 void Runner::loop() {
-#ifdef DEBUG
-    Serial.println(F("Start loop"));
-#endif
+    dprintln(F("Start loop"));
 
     const auto coldSide = thermometer->getTemperature(0);
     const auto hotSide = thermometer->getTemperature(1);
-    const auto humidity = humiditySensor->getHumidity();
     auto now = Clock::getTime();
 
     String time = "Time: ";
@@ -80,80 +54,53 @@ void Runner::loop() {
     time.concat(now.minute());
     showTimeSeparator = !showTimeSeparator;
 
-#ifdef DEBUG
-    Serial.println(time);
-#endif
+    dprintln(time);
     display->displayText(time, 0);
 
-    auto dimmValue = 0;
-    if (now.hour() == 7 || now.hour() == 8 || now.hour() == 9) {
-        dimmValue = ceil((((now.hour() - 7) * 60) + now.minute()) / (180.0 / 255.0));
+    if (now.hour() >= 9 && now.hour() <= 21) {
         handleHotSideTemperature(hotSide);
         uvRelay->turnOn();
-    } else if (now.hour() == 19 || now.hour() == 20 || now.hour() == 21) {
-        dimmValue = floor(255 - ((((now.hour() - 19) * 60) + now.minute()) / (180.0 / 255.0)));
-        handleHotSideTemperature(hotSide);
-        uvRelay->turnOn();
-    } else if (now.hour() > 21 || now.hour() < 7) {
-        dimmValue = 0;
+        dprintln("Light-Relay: Turn on");
+    } else {
         heatRelay->turnOff();
         uvRelay->turnOff();
-    } else {
-        uvRelay->turnOn();
-        dimmValue = 255;
-        handleHotSideTemperature(hotSide);
+        dprintln("Heat-Relay: Turn off");
+        dprintln("Light-Relay: Turn off");
     }
 
-    dimmer->dimm(dimmValue);
-
-#ifdef DEBUG
-    Serial.print(F("Dimmed to: "));
-    Serial.println(dimmValue);
-#endif
     auto currentMillis = millis();
     if (currentMillis - cleanDisplayMillis >= 600000) {
         display->clear();
         cleanDisplayMillis = currentMillis;
     }
 
-#ifdef DEBUG
-    Serial.println(F("Display hot side temperature"));
-#endif
+    dprintln(F("Display hot side temperature"));
     String hotSideText = F("Hot Side:  ");
     hotSideText.concat(hotSide);
     hotSideText.concat(F(" C"));
     display->displayText(hotSideText, 2);
-#ifdef DEBUG
-    Serial.println(hotSideText);
-#endif
+    dprintln(hotSideText);
 
-#ifdef DEBUG
-    Serial.println(F("Display cold side temperature"));
-#endif
+    dprintln(F("Display cold side temperature"));
     String coldSideText = F("Cold Side: ");
     coldSideText.concat(coldSide);
     coldSideText.concat(F(" C"));
     display->displayText(coldSideText, 3);
-#ifdef DEBUG
-    Serial.println(coldSideText);
-#endif
-
-#ifdef DEBUG
-    Serial.println(F("Display humidity"));
-#endif
-    String humidityText = F("Humidity:  ");
-    humidityText.concat(humidity);
-    humidityText.concat(F(" %"));
-    display->displayText(humidityText, 4);
-#ifdef DEBUG
-    Serial.println(humidityText);
-#endif
+    dprintln(coldSideText);
 }
 
-void Runner::handleHotSideTemperature(const uint8_t value) {
-    if (value < 40) {
-        heatRelay->turnOn();
-    } else if (value > 50) {
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "bugprone-branch-clone"
+void Runner::handleHotSideTemperature(const float value) {
+    if (value == -127 || value == 85) {
         heatRelay->turnOff();
+        dprintln("Heat-Relay: Turn off");
+    } else if (value < 35) {
+        heatRelay->turnOn();
+        dprintln("Heat-Relay: Turn on");
+    } else if (value > 40) {
+        heatRelay->turnOff();
+        dprintln("Heat-Relay: Turn off");
     }
 }
+#pragma clang diagnostic pop

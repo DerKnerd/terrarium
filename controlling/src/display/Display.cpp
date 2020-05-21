@@ -1,58 +1,38 @@
 #include "Display.h"
 
 void Display::setup() {
-#ifdef DEBUG
-    Serial.println(F("Create epd instance"));
-#endif
+    dprintln(F("Create epd instance"));
     epd = new Epd();
 
-#ifdef DEBUG
-    Serial.println(F("Initialize epd"));
-#endif
+    dprintln(F("Initialize epd"));
     if (epd->Init(lut_full_update) != 0) {
-#ifdef DEBUG
-        Serial.print(F("e-Paper init failed"));
-#endif
+        dprintln(F("e-Paper init failed"));
         return;
     }
 
-#ifdef DEBUG
-    Serial.println(F("Create paint"));
-#endif
+    dprintln(F("Create paint"));
     paint = new Paint(this->image, 0, 0);
 
-#ifdef DEBUG
-    Serial.println(F("Clear frame memory"));
-#endif
+    dprintln(F("Clear frame memory"));
     clear();
 
-#ifdef DEBUG
-    Serial.println(F("Display hello world"));
-#endif
+    dprintln(F("Display hello world"));
     displayText(F("Hello World"), 0);
 
     delay(2000);
     clear();
 
-#ifdef DEBUG
-    Serial.println(F("Init epd"));
-#endif
+    dprintln(F("Init epd"));
     if (epd->Init(lut_partial_update) != 0) {
-#ifdef DEBUG
         Serial.print(F("e-Paper init failed"));
-#endif
         return;
     }
 }
 
 void Display::clear() {
-#ifdef DEBUG
-    Serial.println(F("Clearing display"));
-#endif
+    dprintln(F("Clearing display"));
     if (epd->Init(lut_full_update) != 0) {
-#ifdef DEBUG
-        Serial.println(F("Clearing failed"));
-#endif
+        dprintln(F("Clearing failed"));
         return;
     }
 
@@ -62,9 +42,7 @@ void Display::clear() {
     epd->DisplayFrame();
 
     if (epd->Init(lut_partial_update) != 0) {
-#ifdef DEBUG
-        Serial.println(F("Clearing failed"));
-#endif
+        dprintln(F("Clearing failed"));
         return;
     }
 }

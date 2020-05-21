@@ -1,0 +1,8 @@
+include_directories(.pio/libdeps/uno/ArduinoJson_ID64)
+include_directories(".pio/libdeps/uno/DHT sensor library_ID19")
+include_directories(".pio/libdeps/uno/Adafruit Unified Sensor_ID31")
+include_directories(.pio/libdeps/uno/DallasTemperature_ID54)
+include_directories(.pio/libdeps/uno/OneWire_ID1)
+include_directories(.pio/libdeps/uno/WiFiNINA_ID5538/src)
+include_directories(.pio/libdeps/uno/DS3231_ID1379)
+include_directories(lib/epd2in9)
