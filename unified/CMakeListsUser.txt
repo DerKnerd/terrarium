@@ -1,0 +1,4 @@
+include_directories(.pio/libdeps/nodemcu-32s/EPD/src)
+include_directories(.pio/libdeps/nodemcu-32s/DS3231)
+include_directories(.pio/libdeps/nodemcu-32s/DallasTemperature)
+include_directories(".pio/libdeps/nodemcu-32s/ESP8266 Influxdb/src")
