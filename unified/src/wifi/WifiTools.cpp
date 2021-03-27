@@ -4,7 +4,11 @@
 
 #include "WifiTools.h"
 
-void WifiTools::setup() {
+auto WifiTools::setup() -> void {
+    connect();
+}
+
+auto WifiTools::connect() -> void {
     dprintln("Connecting to WiFi");
     WiFiClass::mode(WIFI_STA);
     wifiMulti.addAP(WIFI_SSID, WIFI_PASSPRHASE);

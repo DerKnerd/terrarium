@@ -135,6 +135,10 @@ void loop() {
     display.displayText(coldSideText.str(), 3);
     dprintln(coldSideText.str().c_str());
 
+    if (!WifiTools::isConnected()) {
+        wifiTools.connect();
+    }
+
     stringstream ip{};
     ip << "IP: " << WifiTools::getIpAddress().toString().c_str();
     display.displayText(ip.str(), 5);

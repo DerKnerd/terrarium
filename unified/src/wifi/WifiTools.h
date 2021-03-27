@@ -16,11 +16,17 @@
 
 class WifiTools {
 public:
-    void setup();
+    auto setup() -> void;
 
-    static IPAddress getIpAddress() {
+    static auto getIpAddress() -> IPAddress {
         return WiFi.localIP();
     }
+
+    static auto isConnected() -> bool {
+        return WiFi.isConnected();
+    }
+
+    auto connect() -> void;
 
 private:
     WiFiMulti wifiMulti{};
