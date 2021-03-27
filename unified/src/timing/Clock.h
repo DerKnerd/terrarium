@@ -14,11 +14,11 @@
 
 class Clock {
 public:
-    static void setup();
+    static auto setup() -> void;
 
-    static DateTime getTime();
+    static auto getTime() -> DateTime;
 
-    static void setTime();
+    static auto setTime() -> void;
 };
 
 

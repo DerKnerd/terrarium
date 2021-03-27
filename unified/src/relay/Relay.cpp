@@ -4,15 +4,15 @@
 
 #include "Relay.h"
 
-void Relay::setup(const uint8_t pin) {
+auto Relay::setup(const uint8_t pin) -> void {
     this->pin = pin;
     pinMode(pin, OUTPUT);
 }
 
-void Relay::turnOff() const {
+auto Relay::turnOff() const -> void {
     digitalWrite(pin, LOW);
 }
 
-void Relay::turnOn() const {
+auto Relay::turnOn() const -> void {
     digitalWrite(pin, HIGH);
 }

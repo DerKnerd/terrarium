@@ -28,11 +28,11 @@ public:
     Display();
 
 public:
-    void setup();
+    auto setup() -> void;
 
-    void clear();
+    auto clear() -> void;
 
-    void displayText(const string &text, uint8_t line);
+    auto displayText(const string &text, uint8_t line) -> void;
 };
 
 

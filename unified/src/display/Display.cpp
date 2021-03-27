@@ -1,6 +1,6 @@
 #include "Display.h"
 
-void Display::setup() {
+auto Display::setup() -> void {
     dprintln("Initialize epd");
     if (epd.init(lutFullUpdate) != 0) {
         dprintln("e-Paper init failed");
@@ -23,7 +23,7 @@ void Display::setup() {
     }
 }
 
-void Display::clear() {
+auto Display::clear() -> void {
     dprintln("Clearing display");
 
     epd.clearFrameMemory(0xFF);
@@ -34,7 +34,7 @@ void Display::clear() {
     dprintln("Cleared display");
 }
 
-void Display::displayText(const string &text, uint8_t line) {
+auto Display::displayText(const string &text, uint8_t line) -> void {
     paint.setRotate(ROTATE_270);
     paint.setWidth(14);
     paint.setHeight(296);

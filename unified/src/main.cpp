@@ -29,7 +29,7 @@ Influx influx{};
 unsigned long cleanDisplayMillis;
 bool showTimeSeparator = false;
 
-void handleHotSideTemperature(const float value) {
+auto handleHotSideTemperature(const float value) -> void {
     if (value == -127 || value == 85) {
         heatRelay.turnOff();
         dprintln("Heat-Relay: Turn off");
@@ -42,7 +42,7 @@ void handleHotSideTemperature(const float value) {
     }
 }
 
-void setup() {
+auto setup() -> void {
     cleanDisplayMillis = millis();
 
     Serial.begin(9600);
@@ -88,7 +88,7 @@ void setup() {
     display.clear();
 }
 
-void loop() {
+auto loop() -> void {
     delay(10);
 
     const auto hotSide = thermometer.getTemperature(1);
@@ -118,7 +118,6 @@ void loop() {
     time.concat(showTimeSeparator ? ":" : " ");
     time.concat(now.minute() < 10 ? "0" : "");
     time.concat(now.minute());
-    showTimeSeparator = !showTimeSeparator;
 
     dprintln(time.c_str());
     display.displayText(time.c_str(), 0);
@@ -145,6 +144,7 @@ void loop() {
 #ifdef USE_INFLUX
     display.displayText("Influx used: yes", 6);
     display.displayText(influx.getInfluxServer().c_str(), 7);
+    influx.postToInflux(hotSide, coldSide);
 #else
     display.displayText("Influx used: no", 6);
 #endif

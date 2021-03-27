@@ -19,11 +19,11 @@ using std::string;
 
 class Influx {
 public:
-    void setup();
+    auto setup() -> void;
 
-    void postToInflux(float hotSideTemp, float coldSideTemp);
+    auto postToInflux(float hotSideTemp, float coldSideTemp) -> void;
 
-    String getInfluxServer();
+    auto getInfluxServer() -> String;
 
 private:
     InfluxDBClient client{INFLUXDB_URL, INFLUXDB_DB_NAME};

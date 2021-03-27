@@ -12,11 +12,11 @@ class Relay {
 private:
     uint8_t pin;
 public:
-    void setup(uint8_t pin);
+    auto setup(uint8_t pin) -> void;
 
-    void turnOff() const;
+    auto turnOff() const -> void;
 
-    void turnOn() const;
+    auto turnOn() const -> void;
 };
 
 

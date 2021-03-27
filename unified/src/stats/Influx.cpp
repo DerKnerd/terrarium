@@ -4,7 +4,7 @@
 
 #include "Influx.h"
 
-void Influx::postToInflux(const float hotSideTemp, const float coldSideTemp) {
+auto Influx::postToInflux(const float hotSideTemp, const float coldSideTemp) -> void {
 #ifdef USE_INFLUX
     sensor.clearFields();
     sensor.addField("hotSide", hotSideTemp);
@@ -33,7 +33,7 @@ String Influx::getInfluxServer() {
 #endif
 }
 
-void Influx::setup() {
+auto Influx::setup() -> void {
 #ifdef USE_INFLUX
     client.setConnectionParamsV1(INFLUXDB_URL, INFLUXDB_DB_NAME, INFLUXDB_USER, INFLUXDB_PASSWORD, RootCA.c_str());
     sensor.addTag("who", WHOISTHIS);

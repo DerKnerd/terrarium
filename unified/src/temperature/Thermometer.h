@@ -14,9 +14,9 @@ private:
     DallasTemperature dallasTemperature;
 
 public:
-    void setup(uint8_t pin);
+    auto setup(uint8_t pin) -> void;
 
-    float getTemperature(uint8_t oneWireIndex);
+    auto getTemperature(uint8_t oneWireIndex) -> float;
 };
 
 

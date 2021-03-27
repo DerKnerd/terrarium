@@ -4,17 +4,17 @@
 
 #include "Clock.h"
 
-void Clock::setup() {
+auto Clock::setup() -> void {
     setTime();
 }
 
-DateTime Clock::getTime() {
+auto Clock::getTime() -> DateTime {
     const auto now = std::time(nullptr);
     dprintln(now);
 
     return DateTime{(uint32_t) now};
 }
 
-void Clock::setTime() {
+auto Clock::setTime() -> void {
     timeSync(TZ_INFO, "pool.ntp.org", "time.nis.gov");
 }
