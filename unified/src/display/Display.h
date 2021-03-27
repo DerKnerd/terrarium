@@ -7,25 +7,32 @@
 
 #include <Esp.h>
 #include <SPI.h>
-#include <EPD1in54.h>
+#include <EPD.h>
 #include <EPDPaint.h>
-#include "../Symbols.h"
+#include <array>
+#include <string>
+#include "Symbols.h"
 
 #define COLORED 0
 #define UNCOLORED 1
 
+using std::array;
+using std::string;
+
 class Display {
 private:
-    unsigned char image[1024];
-    EPDPaint *paint;
-    EPD1in54 *epd;
+    array<unsigned char, 1024> image{};
+    EPDPaint paint;
+    EPD epd{EPD_RESET_PIN, EPD_DC_PIN, EPD_CS_PIN, EPD_BUSY_PIN, 296, 128};
+public:
+    Display();
 
 public:
     void setup();
 
     void clear();
 
-    void displayText(const String &text, uint8_t line);
+    void displayText(const string &text, uint8_t line);
 };
 
 

@@ -5,7 +5,7 @@
 #ifndef TERRARIUM_MEASURE_AND_CONTROL_RELAY_H
 #define TERRARIUM_MEASURE_AND_CONTROL_RELAY_H
 
-#include <stdint.h>
+#include <cstdint>
 #include <Esp.h>
 
 class Relay {
@@ -14,9 +14,9 @@ private:
 public:
     void setup(uint8_t pin);
 
-    void turnOff();
+    void turnOff() const;
 
-    void turnOn();
+    void turnOn() const;
 };
 
 

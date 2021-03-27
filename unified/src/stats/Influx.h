@@ -1,36 +1,34 @@
 //
-// Created by imanuel on 21.03.21.
+// Created by imanuel on 23.03.21.
 //
 
-#ifndef UNIFIED_NETWORKHANDLER_H
-#define UNIFIED_NETWORKHANDLER_H
+#ifndef UNIFIED_INFLUX_H
+#define UNIFIED_INFLUX_H
 
-#include "../Symbols.h"
+#include "Symbols.h"
+#include "InfluxInfo.h"
+#include "WhoIsThis.h"
+#include <string>
 #include <WiFiMulti.h>
 #include <HTTPClient.h>
 #include <InfluxDbClient.h>
-#include "../WifiSecrets.h"
-#include "../WhoIsThis.h"
-#include "../InfluxInfo.h"
+#include <FS.h>
+#include <Arduino.h>
 
+using std::string;
 
-#define TZ_INFO "CET-1CEST,M3.5.0,M10.5.0/3"
-
-class NetworkHandler {
+class Influx {
 public:
     void setup();
 
     void postToInflux(float hotSideTemp, float coldSideTemp);
 
-    static IPAddress getIpAddress() {
-        return WiFi.localIP();
-    }
+    String getInfluxServer();
 
 private:
-    WiFiMulti *wifiMulti = new WiFiMulti();
-    InfluxDBClient *client = new InfluxDBClient(INFLUXDB_URL, INFLUXDB_DB_NAME);
-    Point sensor = Point("terrarium_temperature");
-    const char *RootCA = R"EOF(
+    InfluxDBClient client{INFLUXDB_URL, INFLUXDB_DB_NAME};
+    Point sensor{"terrarium_temperature"};
+    const string RootCA{R"EOF(
 -----BEGIN CERTIFICATE-----
 MIIDSjCCAjKgAwIBAgIQRK+wgNajJ7qJMDmGLvhAazANBgkqhkiG9w0BAQUFADA/
 MSQwIgYDVQQKExtEaWdpdGFsIFNpZ25hdHVyZSBUcnVzdCBDby4xFzAVBgNVBAMT
@@ -51,8 +49,8 @@ R8srzJmwN0jP41ZL9c8PDHIyh8bwRLtTcm1D9SZImlJnt1ir/md2cXjbDaJWFBM5
 JDGFoqgCWjBH4d1QB7wCCZAA62RjYJsWvIjJEubSfZGL+T0yjWW06XyxV3bqxbYo
 Ob8VZRzI9neWagqNdwvYkQsEjgfbKbYK7p2CNTUQ
 -----END CERTIFICATE-----
-)EOF";
+)EOF"};
 };
 
 
-#endif //UNIFIED_NETWORKHANDLER_H
+#endif //UNIFIED_INFLUX_H

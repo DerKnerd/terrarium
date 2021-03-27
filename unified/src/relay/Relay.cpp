@@ -9,10 +9,10 @@ void Relay::setup(const uint8_t pin) {
     pinMode(pin, OUTPUT);
 }
 
-void Relay::turnOff() {
+void Relay::turnOff() const {
     digitalWrite(pin, LOW);
 }
 
-void Relay::turnOn() {
+void Relay::turnOn() const {
     digitalWrite(pin, HIGH);
 }

@@ -6,12 +6,12 @@
 #define TERRARIUM_MEASURE_AND_CONTROL_THERMOMETER_H
 
 #include <Esp.h>
-#include <display/Display.h>
 #include <DallasTemperature.h>
+#include <display/Display.h>
 
 class Thermometer {
 private:
-    DallasTemperature *dallasTemperature;
+    DallasTemperature dallasTemperature;
 
 public:
     void setup(uint8_t pin);

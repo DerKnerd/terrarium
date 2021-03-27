@@ -163,7 +163,7 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 
-src/WifiSecrets.h
-src/WhoIsThis.h
+include/WifiSecrets.h
+include/WhoIsThis.h
 /src/Hostname.h
-/src/InfluxInfo.h
+/include/InfluxInfo.h

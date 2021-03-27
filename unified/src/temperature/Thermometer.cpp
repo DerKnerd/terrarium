@@ -7,15 +7,15 @@
 void Thermometer::setup(const uint8_t pin) {
     auto oneWire = new OneWire(pin);
 
-    dallasTemperature = new DallasTemperature(oneWire);
-    dallasTemperature->begin();
+    dallasTemperature = DallasTemperature{oneWire};
+    dallasTemperature.begin();
 #ifdef ESP32
-    dallasTemperature->begin();
+    dallasTemperature.begin();
 #endif
 }
 
 float Thermometer::getTemperature(const uint8_t oneWireIndex) {
-    dallasTemperature->requestTemperatures();
+    dallasTemperature.requestTemperatures();
 
-    return dallasTemperature->getTempCByIndex(oneWireIndex);
+    return dallasTemperature.getTempCByIndex(oneWireIndex);
 }
