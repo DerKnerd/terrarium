@@ -16,12 +16,9 @@
 #define COLORED 0
 #define UNCOLORED 1
 
-using std::array;
-using std::string;
-
 class Display {
 private:
-    array<unsigned char, 1024> image{};
+    std::array<unsigned char, 1024> image{};
     EPDPaint paint;
     EPD epd{EPD_RESET_PIN, EPD_DC_PIN, EPD_CS_PIN, EPD_BUSY_PIN, 296, 128};
 public:
@@ -32,7 +29,7 @@ public:
 
     auto clear() -> void;
 
-    auto displayText(const string &text, uint8_t line) -> void;
+    auto displayText(const std::string &text, uint8_t line) -> void;
 };
 
 

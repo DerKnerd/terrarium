@@ -26,7 +26,7 @@ Relay uvRelay{};
 WifiTools wifiTools{};
 Influx influx{};
 
-unsigned long cleanDisplayMillis;
+unsigned int currentMinute;
 bool showTimeSeparator = false;
 
 auto handleHotSideTemperature(const float value) -> void {
@@ -43,8 +43,6 @@ auto handleHotSideTemperature(const float value) -> void {
 }
 
 auto setup() -> void {
-    cleanDisplayMillis = millis();
-
     Serial.begin(9600);
     dprintln("Init...");
 
@@ -86,11 +84,12 @@ auto setup() -> void {
 
     display.displayText("Finish setup", 8);
     display.clear();
+
+    auto now = Clock::getTime();
+    currentMinute = now.minute();
 }
 
 auto loop() -> void {
-    delay(10);
-
     const auto hotSide = thermometer.getTemperature(1);
     auto now = Clock::getTime();
 
@@ -106,11 +105,10 @@ auto loop() -> void {
     }
 
     const auto coldSide = thermometer.getTemperature(0);
-    auto currentMillis = millis();
-    if (currentMillis - cleanDisplayMillis >= 600000) {
+    if (now.minute() % 10 == 0 && currentMinute != now.minute()) {
         display.clear();
-        cleanDisplayMillis = currentMillis;
         Clock::setTime();
+        currentMinute = now.minute();
     }
     String time = "Time: ";
     time.concat(now.hour() < 10 ? "0" : "");
@@ -118,6 +116,7 @@ auto loop() -> void {
     time.concat(showTimeSeparator ? ":" : " ");
     time.concat(now.minute() < 10 ? "0" : "");
     time.concat(now.minute());
+    showTimeSeparator = !showTimeSeparator;
 
     dprintln(time.c_str());
     display.displayText(time.c_str(), 0);

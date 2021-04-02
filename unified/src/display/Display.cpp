@@ -1,5 +1,8 @@
 #include "Display.h"
 
+using std::array;
+using std::string;
+
 auto Display::setup() -> void {
     dprintln("Initialize epd");
     if (epd.init(lutFullUpdate) != 0) {
@@ -26,11 +29,14 @@ auto Display::setup() -> void {
 auto Display::clear() -> void {
     dprintln("Clearing display");
 
+    epd.clear(lutFullUpdate);
+
     epd.clearFrameMemory(0xFF);
     epd.displayFrame();
     epd.clearFrameMemory(0xFF);
     epd.displayFrame();
 
+    epd.clear(lutPartialUpdate);
     dprintln("Cleared display");
 }
 

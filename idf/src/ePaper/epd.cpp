@@ -1,9 +1,9 @@
 /**
- *  @filename   :   EPD.cpp
+ *  @filename   :   Epd2in9.cpp
  *  @brief      :   Implements for e-paper library
  *  @author     :   Yehui from Waveshare
  *
- *  Copyright (C) Waveshare     September 5 2017
+ *  Copyright (C) Waveshare     August 18 2017
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documnetation files (the "Software"), to deal
@@ -24,20 +24,29 @@
  * THE SOFTWARE.
  */
 
-#include <stdlib.h>
-#include "EPD.h"
+#include <cstdlib>
+#include <array>
+#include <cstring>
+#include <Symbols.h>
+#include "ePaper/include/epd.h"
 
-EPD::~EPD() {
-};
+//////////////////////////////////////full screen update LUT////////////////////////////////////////////
 
-EPD::EPD(unsigned int reset, unsigned int dc, unsigned int cs, unsigned int busy, unsigned int height,
-         unsigned int width)
-        : EPDIF(reset, dc, cs, busy) {
+static spi_device_handle_t spi;
+
+epaper::Epd::~Epd() = default;
+
+epaper::Epd::Epd(gpio_num_t reset, gpio_num_t dc, gpio_num_t cs, gpio_num_t busy, unsigned short height,
+                 unsigned short width) : lut{lutFullUpdate} {
     this->width = width;
     this->height = height;
+    resetPin = reset;
+    dcPin = dc;
+    csPin = cs;
+    busyPin = busy;
 };
 
-void EPD::clear(const unsigned char *lut) {
+auto epaper::Epd::clear(const std::array<unsigned char, 30> lut) -> void {
     this->lut = lut;
     reset();
     sendCommand(DRIVER_OUTPUT_CONTROL);
@@ -59,64 +68,64 @@ void EPD::clear(const unsigned char *lut) {
     setLut(this->lut);
 }
 
-int EPD::init(const unsigned char *lut) {
-    /* this calls the peripheral hardware interface, see epdif */
+auto epaper::Epd::init(const std::array<unsigned char, 30> lut) -> int {
+    /* this calls the peripheral hardware interface, see Epd */
     if (ifInit() != 0) {
         return -1;
     }
-    /* EPD hardware init start */
+    /* Epd hardware init start */
     clear(lut);
 
-    /* EPD hardware init end */
+    /* Epd hardware init end */
     return 0;
 }
 
 /**
  *  @brief: basic function for sending commands
  */
-void EPD::sendCommand(unsigned char command) {
-    digitalWrite(dcPin, LOW);
+auto epaper::Epd::sendCommand(unsigned char command) -> void {
+    gpio_set_level(dcPin, LOW);
     spiTransfer(command);
 }
 
 /**
  *  @brief: basic function for sending data
  */
-void EPD::sendData(unsigned char data) {
-    digitalWrite(dcPin, HIGH);
+auto epaper::Epd::sendData(unsigned char data) -> void {
+    gpio_set_level(dcPin, HIGH);
     spiTransfer(data);
 }
 
 /**
  *  @brief: Wait until the busyPin goes LOW
  */
-void EPD::waitUntilIdle(void) {
-    while (digitalRead(busyPin) == HIGH) {      //LOW: idle, HIGH: busy
-        delayMs(100);
+auto epaper::Epd::waitUntilIdle() const -> void {
+    while (gpio_get_level(busyPin) == HIGH) {      //LOW: idle, HIGH: busy
+        vTaskDelay(100 / portTICK_RATE_MS);;
     }
 }
 
 /**
  *  @brief: module reset.
  *          often used to awaken the module in deep sleep,
- *          see EPD::sleep();
+ *          see Epd::sleep();
  */
-void EPD::reset(void) {
-    digitalWrite(resetPin, LOW);                //module reset
-    delayMs(200);
-    digitalWrite(resetPin, HIGH);
-    delayMs(200);
+auto epaper::Epd::reset() -> void {
+    gpio_set_level(resetPin, LOW);                //module reset
+    vTaskDelay(200 / portTICK_RATE_MS);;
+    gpio_set_level(resetPin, HIGH);
+    vTaskDelay(200 / portTICK_RATE_MS);;
 }
 
 /**
  *  @brief: set the look-up table register
  */
-void EPD::setLut(const unsigned char *lut) {
+auto epaper::Epd::setLut(const std::array<unsigned char, 30> lut) -> void {
     this->lut = lut;
     sendCommand(WRITE_LUT_REGISTER);
     /* the length of look-up table is 30 bytes */
-    for (int i = 0; i < 30; i++) {
-        sendData(this->lut[i]);
+    for (auto item : this->lut) {
+        sendData(item);
     }
 }
 
@@ -124,21 +133,12 @@ void EPD::setLut(const unsigned char *lut) {
  *  @brief: put an image buffer to the frame memory.
  *          this won't update the display.
  */
-void EPD::setFrameMemory(
-        const unsigned char *image_buffer,
-        int x,
-        int y,
-        int image_width,
-        int image_height
-) {
-    int x_end;
-    int y_end;
+auto epaper::Epd::setFrameMemory(const unsigned char *image_buffer, unsigned short x, unsigned short y,
+                                 unsigned short image_width, unsigned short image_height) -> void {
+    unsigned short x_end;
+    unsigned short y_end;
 
-    if (
-            image_buffer == NULL ||
-            x < 0 || image_width < 0 ||
-            y < 0 || image_height < 0
-            ) {
+    if (image_buffer == nullptr) {
         return;
     }
     /* x point must be the multiple of 8 or the last 3 bits will be ignored */
@@ -182,13 +182,13 @@ void EPD::setFrameMemory(
  *          you have to use the function pgm_read_byte to read buffers
  *          from the flash).
  */
-void EPD::setFrameMemory(const unsigned char *image_buffer) {
+auto epaper::Epd::setFrameMemory(const unsigned char *image_buffer) -> void {
     setMemoryArea(0, 0, this->width - 1, this->height - 1);
     setMemoryPointer(0, 0);
     sendCommand(WRITE_RAM);
     /* send the image data */
     for (int i = 0; i < this->width / 8 * this->height; i++) {
-        sendData(pgm_read_byte(&image_buffer[i]));
+        sendData(image_buffer[i]);
     }
 }
 
@@ -196,7 +196,7 @@ void EPD::setFrameMemory(const unsigned char *image_buffer) {
  *  @brief: clear the frame memory with the specified color.
  *          this won't update the display.
  */
-void EPD::clearFrameMemory(unsigned char color) {
+auto epaper::Epd::clearFrameMemory(unsigned char color) -> void {
     setMemoryArea(0, 0, this->width - 1, this->height - 1);
     setMemoryPointer(0, 0);
     sendCommand(WRITE_RAM);
@@ -213,7 +213,7 @@ void EPD::clearFrameMemory(unsigned char color) {
  *          the the next action of setFrameMemory or clearFrame will
  *          set the other memory area.
  */
-void EPD::displayFrame(void) {
+auto epaper::Epd::displayFrame() -> void {
     sendCommand(DISPLAY_UPDATE_CONTROL_2);
     sendData(0xC4);
     sendCommand(MASTER_ACTIVATION);
@@ -224,7 +224,8 @@ void EPD::displayFrame(void) {
 /**
  *  @brief: private function to specify the memory area for data R/W
  */
-void EPD::setMemoryArea(int x_start, int y_start, int x_end, int y_end) {
+auto epaper::Epd::setMemoryArea(unsigned short x_start, unsigned short y_start, unsigned short x_end,
+                                unsigned short y_end) -> void {
     sendCommand(SET_RAM_X_ADDRESS_START_END_POSITION);
     /* x point must be the multiple of 8 or the last 3 bits will be ignored */
     sendData((x_start >> 3) & 0xFF);
@@ -239,7 +240,7 @@ void EPD::setMemoryArea(int x_start, int y_start, int x_end, int y_end) {
 /**
  *  @brief: private function to specify the start point for data R/W
  */
-void EPD::setMemoryPointer(int x, int y) {
+auto epaper::Epd::setMemoryPointer(unsigned short x, unsigned short y) -> void {
     sendCommand(SET_RAM_X_ADDRESS_COUNTER);
     /* x point must be the multiple of 8 or the last 3 bits will be ignored */
     sendData((x >> 3) & 0xFF);
@@ -253,27 +254,88 @@ void EPD::setMemoryPointer(int x, int y) {
  *  @brief: After this command is transmitted, the chip would enter the
  *          deep-sleep mode to save power.
  *          The deep sleep mode would return to standby by hardware reset.
- *          You can use EPD::init() to awaken
+ *          You can use Epd::init() to awaken
  */
-void EPD::sleep() {
+auto epaper::Epd::sleep() -> void {
     sendCommand(DEEP_SLEEP_MODE);
     waitUntilIdle();
 }
 
-const unsigned char lutFullUpdate[] =
-        {
-                0x02, 0x02, 0x01, 0x11, 0x12, 0x12, 0x22, 0x22,
-                0x66, 0x69, 0x69, 0x59, 0x58, 0x99, 0x99, 0x88,
-                0x00, 0x00, 0x00, 0x00, 0xF8, 0xB4, 0x13, 0x51,
-                0x35, 0x51, 0x51, 0x19, 0x01, 0x00
-        };
+auto epaper::Epd::spiTransfer(unsigned char data) -> void {
+    esp_err_t ret;
+    spi_transaction_t t;
+    memset(&t, 0, sizeof(t));       //Zero out the transaction
+    t.flags = SPI_TRANS_USE_TXDATA;
+    t.length = 8;        // transaction length is in bits
+    t.tx_data[0] = data;
+    t.tx_data[1] = data;
+    t.tx_data[2] = data;
+    t.tx_data[3] = data;
+    ret = spi_device_transmit(spi, &t);  //Transmit!
+    assert(ret == ESP_OK);            //Should have had no issues.
+}
 
-const unsigned char lutPartialUpdate[] =
-        {
-                0x10, 0x18, 0x18, 0x08, 0x18, 0x18, 0x08, 0x00,
-                0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-                0x00, 0x00, 0x00, 0x00, 0x13, 0x14, 0x44, 0x12,
-                0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-        };
+auto epaper::Epd::ifInit() -> int {
+    if (spi) {
+        spi_bus_remove_device(spi);
+    }
+    spi_bus_free(VSPI_HOST);
 
-/* END OF FILE */
+    gpio_config_t io_conf = {0};
+    io_conf.intr_type = GPIO_INTR_DISABLE;
+    io_conf.mode = GPIO_MODE_OUTPUT;
+    io_conf.pin_bit_mask = ((uint64_t) 1 << (uint64_t) dcPin) | ((uint64_t) 1 << (uint64_t) resetPin);
+    io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
+    io_conf.pull_up_en = GPIO_PULLUP_ENABLE;
+    ESP_ERROR_CHECK(gpio_config(&io_conf));
+
+    gpio_config_t i_conf = {0};
+    i_conf.intr_type = GPIO_INTR_DISABLE;
+    i_conf.mode = GPIO_MODE_INPUT;
+    i_conf.pin_bit_mask = ((uint64_t) 1 << (uint64_t) busyPin);
+    i_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
+    i_conf.pull_up_en = GPIO_PULLUP_DISABLE;
+    ESP_ERROR_CHECK(gpio_config(&i_conf));
+
+    esp_err_t ret;
+
+    spi_bus_config_t buscfg = {0};
+    buscfg.mosi_io_num = MOSI_PIN;
+    buscfg.sclk_io_num = CLK_PIN;
+    buscfg.miso_io_num = -1;
+    buscfg.quadwp_io_num = -1;
+    buscfg.quadhd_io_num = -1;
+
+    //Initialize the SPI bus
+    ret = spi_bus_initialize(HSPI_HOST, &buscfg, 0);
+    switch (ret) {
+        case ESP_ERR_INVALID_ARG:
+            ESP_LOGE("Epd", "INVALID ARG");
+            break;
+        case ESP_ERR_INVALID_STATE:
+            ESP_LOGE("Epd", "INVALID STATE");
+            break;
+        case ESP_ERR_NO_MEM:
+            ESP_LOGE("Epd", "INVALID NO MEMORY");
+            break;
+        case ESP_OK:
+            ESP_LOGE("Epd", "All OK");
+    }
+    assert(ret == ESP_OK);
+
+    spi_device_interface_config_t devcfg;
+    memset(&devcfg, 0, sizeof(devcfg));
+    devcfg.command_bits = 0;
+    devcfg.address_bits = 0;
+    devcfg.dummy_bits = 0;
+    devcfg.clock_speed_hz = 2 * 1000 * 1000;
+    devcfg.mode = 0;
+    devcfg.spics_io_num = csPin;
+    devcfg.queue_size = 1;
+
+    //Attach the EPD to the SPI bus
+    ret = spi_bus_add_device(HSPI_HOST, &devcfg, &spi);
+    assert(ret == ESP_OK);
+
+    return 0;
+}

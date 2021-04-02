@@ -101,6 +101,8 @@ public:
 
     void sleep(void);
 
+    void clear(const unsigned char *lut);
+
 private:
     const unsigned char *lut;
 
