@@ -72,6 +72,8 @@ namespace epaper {
         auto
         drawStringAt(unsigned short x, unsigned short y, const std::string &text, sFONT *font, char colored) -> void;
 
+        void setImage(unsigned char *image);
+
     private:
         unsigned char *image;
         unsigned short width;

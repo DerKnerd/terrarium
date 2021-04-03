@@ -13,20 +13,19 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ca0f8115-7c7a-4820-b543-84d34b0ef2ea" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/idf.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/CMakeListsUser.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/include/Symbols.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unified/lib/EPD/src/EPD.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../unified/lib/EPD/src/EPD.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unified/lib/EPD/src/EPD.h" beforeDir="false" afterPath="$PROJECT_DIR$/../unified/lib/EPD/src/EPD.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unified/platformio.ini" beforeDir="false" afterPath="$PROJECT_DIR$/../unified/platformio.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unified/src/display/Display.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../unified/src/display/Display.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unified/src/display/Display.h" beforeDir="false" afterPath="$PROJECT_DIR$/../unified/src/display/Display.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../unified/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../unified/src/main.cpp" afterDir="false" />
+    <list default="true" id="ca0f8115-7c7a-4820-b543-84d34b0ef2ea" name="Default Changelist" comment="Added epaper support for idf">
+      <change afterPath="$PROJECT_DIR$/src/input/Temperature.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/input/Temperature.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/output/Display.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/output/Display.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeListsUser.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeListsUser.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/Symbols.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/Symbols.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/platformio.ini" beforeDir="false" afterPath="$PROJECT_DIR$/platformio.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ePaper/epdpaint.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/ePaper/epdpaint.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ePaper/include/epdpaint.h" beforeDir="false" afterPath="$PROJECT_DIR$/src/ePaper/include/epdpaint.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -76,11 +75,11 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/display" />
       <recent name="$PROJECT_DIR$/src" />
       <recent name="$PROJECT_DIR$/components/ePaper" />
       <recent name="$PROJECT_DIR$/components" />
       <recent name="$PROJECT_DIR$/lib" />
-      <recent name="$PROJECT_DIR$/src/components" />
     </key>
   </component>
   <component name="RunManager" selected="PlatformIO.PlatformIO Upload">
@@ -125,8 +124,16 @@
       <updated>1617307071424</updated>
       <workItem from="1617307073289" duration="122000" />
       <workItem from="1617307203388" duration="119000" />
-      <workItem from="1617307346445" duration="20388000" />
+      <workItem from="1617307346445" duration="32686000" />
     </task>
+    <task id="LOCAL-00001" summary="Added epaper support for idf">
+      <created>1617328671626</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1617328671626</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -143,5 +150,9 @@
       </map>
     </option>
     <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Added epaper support for idf" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added epaper support for idf" />
   </component>
 </project>

@@ -173,3 +173,7 @@ epaper::Paint::drawStringAt(unsigned short x, unsigned short y, const std::strin
         counter++;
     }
 }
+
+void epaper::Paint::setImage(unsigned char *image) {
+    this->image = image;
+}

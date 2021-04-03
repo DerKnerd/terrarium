@@ -18,7 +18,7 @@
 #define EPD_DC_PIN 25
 #define EPD_CS_PIN 26
 #define EPD_BUSY_PIN 27
-#define THERMOMETER_PIN 4
+#define THERMOMETER_PIN 15
 #define HEAT_RELAY_PIN 34
 #define UV_RELAY_PIN 19
 

@@ -1,1 +1,3 @@
 include_directories(lib/ePaper)
+include_directories(".pio/libdeps/nodemcu-32s/esp32-owb/include")
+include_directories(".pio/libdeps/nodemcu-32s/esp32-ds18b20/include")

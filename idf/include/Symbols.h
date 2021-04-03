@@ -11,5 +11,6 @@
 #define EPD_BUSY_PIN GPIO_NUM_27
 #define MOSI_PIN 23
 #define CLK_PIN 18
+#define GPIO_DS18B20 GPIO_NUM_15
 
 #endif //IDF_SYMBOLS_H
