@@ -33,10 +33,13 @@ auto handleHotSideTemperature(const float value) -> void {
     if (value == -127 || value == 85) {
         heatRelay.turnOff();
         dprintln("Heat-Relay: Turn off");
+        display.displayText("heat off", 8);
     } else if (value < 35) {
         heatRelay.turnOn();
+        display.displayText("heat on", 8);
         dprintln("Heat-Relay: Turn on");
     } else if (value > 40) {
+        display.displayText("heat off", 8);
         heatRelay.turnOff();
         dprintln("Heat-Relay: Turn off");
     }

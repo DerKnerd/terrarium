@@ -9,7 +9,9 @@ auto Influx::postToInflux(const float hotSideTemp, const float coldSideTemp) -> 
     sensor.clearFields();
     sensor.addField("hotSide", hotSideTemp);
     sensor.addField("coldSide", coldSideTemp);
+    client.setInsecure(true);
     if (client.validateConnection()) {
+        client.setInsecure(true);
         if (!client.writePoint(sensor)) {
             dprintln("Failed to write measurements");
             dprintln(client.getLastErrorMessage());
@@ -35,9 +37,9 @@ String Influx::getInfluxServer() {
 
 auto Influx::setup() -> void {
 #ifdef USE_INFLUX
-    client.setConnectionParamsV1(INFLUXDB_URL, INFLUXDB_DB_NAME, INFLUXDB_USER, INFLUXDB_PASSWORD, RootCA.c_str());
     sensor.addTag("who", WHOISTHIS);
 
+    client.setInsecure(true);
     if (client.validateConnection()) {
         dprint("Connected to InfluxDB: ");
         dprintln(client.getServerUrl());
